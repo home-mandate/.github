@@ -11,6 +11,7 @@ limits, times of day, a confirmation on your phone and a tamper-evident log.
 | [spec](https://github.com/home-mandate/spec) | The Home-Mandate Specification: data model, evaluation rule, vocabulary, JSON schemas, conformance cases and test tool; reference evaluator in Go | CC BY 4.0 (text), Apache 2.0 |
 | [spec-ts](https://github.com/home-mandate/spec-ts) | Independent TypeScript implementation of the specification | Apache 2.0 |
 | [ha-home-mandate](https://github.com/home-mandate/ha-home-mandate) | Home-Mandate for Home Assistant: the gateway that enforces mandates in front of Home Assistant | AGPL-3.0-or-later |
+| [relay](https://github.com/home-mandate/relay) | Relay for Home-Mandate Cloud: makes a gateway at home reachable for cloud agents without opening ports; TLS ends at home, the relay only forwards encrypted bytes (in development) | AGPL-3.0-or-later |
 | [home-mandate.org](https://github.com/home-mandate/home-mandate.org) | Source of the website [home-mandate.org](https://home-mandate.org) | Apache 2.0, CC BY 4.0 (texts) |
 
 **Start here:** [home-mandate.org](https://home-mandate.org) explains mandates in plain
