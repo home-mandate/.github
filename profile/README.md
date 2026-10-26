@@ -1,6 +1,7 @@
-# Home-Mandate
-
-**AI is coming home. Decide what it may do.**
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/home-mandate/.github/main/profile/assets/hm-lockup-dark.svg">
+  <img src="https://raw.githubusercontent.com/home-mandate/.github/main/profile/assets/hm-lockup.svg" alt="Home-Mandate – AI is coming home. Decide what it may do." width="400">
+</picture>
 
 Home-Mandate lets every household decide what an AI agent may do – allow, ask or
 deny – before anything happens. Every agent gets its own mandate: single actions,
@@ -25,4 +26,4 @@ its conformance with the public test suite.
 "Report a vulnerability" in the affected repository.
 
 "Home-Mandate" is a trademark filed with the German Patent and Trade Mark Office
-(DPMA, application 302026256047.4).
+(DPMA, application 302026256047.4). The logo is © 2026 Markus Mazurczak.
