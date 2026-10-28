@@ -1,6 +1,7 @@
 # Contributing
 
-Thank you for helping. This page applies to every repository in the `home-mandate`
+Thank you for helping. Everyone here follows the [code of conduct](CODE_OF_CONDUCT.md).
+This page applies to every repository in the `home-mandate`
 organization; a repository may add its own rules in its own `CONTRIBUTING.md` (the
 specification does: [spec/CONTRIBUTING.md](https://github.com/home-mandate/spec/blob/main/CONTRIBUTING.md)).
 

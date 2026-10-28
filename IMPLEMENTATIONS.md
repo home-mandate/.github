@@ -53,8 +53,10 @@ The name of a published package (npm, PyPI, …) is agreed when the repository i
    (mandates, requests, audit logs, signatures) also fuzzes those parsers for a long run
    on the 1st and 15th of every month. A failure opens an issue in the repository. The
    tools are the maintainer's choice.
-5. **Security.** A `SECURITY.md` with GitHub's private vulnerability reporting. Reports
-   are acknowledged within 72 hours. A flaw caused by the specification is reported to
+5. **Security.** A `SECURITY.md` with GitHub's private vulnerability reporting turned on.
+   Reports are answered as soon as possible, aiming for a week; if that is not possible
+   for a while, the maintainer tells me, so that someone else can look at it. A flaw
+   caused by the specification is reported to
    [spec](https://github.com/home-mandate/spec/security) as well.
 6. **License.** Apache 2.0 for libraries. A bridge may use a copyleft license; it says so
    in its README.
