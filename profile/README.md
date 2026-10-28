@@ -25,5 +25,11 @@ its conformance with the public test suite.
 **Security:** please report vulnerabilities privately through GitHub's
 "Report a vulnerability" in the affected repository.
 
+**Working together:** [governance](https://github.com/home-mandate/.github/blob/main/GOVERNANCE.md) ·
+[contributing](https://github.com/home-mandate/.github/blob/main/CONTRIBUTING.md) ·
+[code of conduct](https://github.com/home-mandate/.github/blob/main/CODE_OF_CONDUCT.md) ·
+[implementations](https://github.com/home-mandate/.github/blob/main/IMPLEMENTATIONS.md) ·
+[name and logo](https://github.com/home-mandate/.github/blob/main/TRADEMARKS.md).
+
 "Home-Mandate" is a trademark filed with the German Patent and Trade Mark Office
 (DPMA, application 302026256047.4). The logo is © 2026 Markus Mazurczak.
