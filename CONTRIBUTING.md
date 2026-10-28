@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for helping. Everyone here follows the [code of conduct](CODE_OF_CONDUCT.md).
+Thank you for helping. Everyone here follows the [code of conduct](https://github.com/home-mandate/.github/blob/main/CODE_OF_CONDUCT.md).
 This page applies to every repository in the `home-mandate`
 organization; a repository may add its own rules in its own `CONTRIBUTING.md` (the
 specification does: [spec/CONTRIBUTING.md](https://github.com/home-mandate/spec/blob/main/CONTRIBUTING.md)).
@@ -34,5 +34,5 @@ pull request does not need to say whether AI was involved.
 ## Who decides
 
 The maintainer of the repository decides what is merged. How decisions across
-repositories are made is in [GOVERNANCE.md](GOVERNANCE.md); what implementations keep is
-in [IMPLEMENTATIONS.md](IMPLEMENTATIONS.md).
+repositories are made is in [GOVERNANCE.md](https://github.com/home-mandate/.github/blob/main/GOVERNANCE.md); what implementations keep is
+in [IMPLEMENTATIONS.md](https://github.com/home-mandate/.github/blob/main/IMPLEMENTATIONS.md).

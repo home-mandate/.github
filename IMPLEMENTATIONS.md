@@ -9,10 +9,10 @@ mandates on a platform, such as
 ## Inside or outside the organization
 
 - **Outside** is always fine and needs nobody's permission. The name and the logo follow
-  [TRADEMARKS.md](TRADEMARKS.md).
+  [TRADEMARKS.md](https://github.com/home-mandate/.github/blob/main/TRADEMARKS.md).
 - **Inside** the organization, a repository is created when I invite someone to maintain
   it, or when someone asks and I agree. The repository belongs to the organization; the
-  maintainer runs it ([GOVERNANCE.md](GOVERNANCE.md)). Inside or outside, an
+  maintainer runs it ([GOVERNANCE.md](https://github.com/home-mandate/.github/blob/main/GOVERNANCE.md)). Inside or outside, an
   implementation that passes the conformance suite is listed on
   [home-mandate.org](https://home-mandate.org) the same way.
 
