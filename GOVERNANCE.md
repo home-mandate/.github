@@ -7,8 +7,8 @@ decides what, so that nobody has to guess. It applies to every repository in the
 ## Roles
 
 **Owner (Markus Mazurczak).** I own the organization, the name and the logo
-([TRADEMARKS.md](https://github.com/home-mandate/.github/blob/main/TRADEMARKS.md)), and I edit the specification until v1.0. I
-decide:
+([TRADEMARKS.md](https://github.com/home-mandate/.github/blob/main/TRADEMARKS.md)), and I
+edit the specification until v1.0. I decide:
 
 - what goes into the specification, the schemas and the conformance cases;
 - which repositories exist in the organization, what they are called and who maintains
