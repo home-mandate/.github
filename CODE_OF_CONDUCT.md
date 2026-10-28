@@ -37,7 +37,7 @@ pull requests, discussions, reviews and anything said in the project's name else
 ## When something goes wrong
 
 If you feel treated unfairly, or see it happen to someone else, tell me privately:
-<CONTACT>. You do not have to discuss it in public, and nobody will be named in public
+[contact@home-mandate.org](mailto:contact@home-mandate.org). You do not have to discuss it in public, and nobody will be named in public
 because of a report.
 
 I first talk to the people involved, privately, and look for a way to go on together.
