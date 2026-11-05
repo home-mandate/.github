@@ -35,4 +35,5 @@ pull request does not need to say whether AI was involved.
 
 The maintainer of the repository decides what is merged. How decisions across
 repositories are made is in [GOVERNANCE.md](https://github.com/home-mandate/.github/blob/main/GOVERNANCE.md); what implementations keep is
-in [IMPLEMENTATIONS.md](https://github.com/home-mandate/.github/blob/main/IMPLEMENTATIONS.md).
+in [IMPLEMENTATIONS.md](https://github.com/home-mandate/.github/blob/main/IMPLEMENTATIONS.md);
+how versions are released is in [RELEASING.md](https://github.com/home-mandate/.github/blob/main/RELEASING.md).

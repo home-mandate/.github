@@ -28,6 +28,7 @@ its conformance with the public test suite.
 
 **Working together:** [governance](https://github.com/home-mandate/.github/blob/main/GOVERNANCE.md) ·
 [contributing](https://github.com/home-mandate/.github/blob/main/CONTRIBUTING.md) ·
+[releasing](https://github.com/home-mandate/.github/blob/main/RELEASING.md) ·
 [code of conduct](https://github.com/home-mandate/.github/blob/main/CODE_OF_CONDUCT.md) ·
 [implementations](https://github.com/home-mandate/.github/blob/main/IMPLEMENTATIONS.md) ·
 [name and logo](https://github.com/home-mandate/.github/blob/main/TRADEMARKS.md).

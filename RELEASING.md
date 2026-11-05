@@ -69,6 +69,8 @@ A published version can't be taken back. So every repository has these guards:
 - **`main` and `release/*`** have the same ruleset: pull request required, checks required, no
   force-push, no deletion. Only administrators may create a `release/*` branch.
 - **Implementations** attach a conformance report with build provenance to every release.
+- **The nightly vulnerability check** also covers the newest `release/X.Y`. A release branch
+  gets no dependency updates of its own, so a finding there is fixed like any other bug.
 
 Create a tag with git, not with GitHub's "Draft a new release" page, which creates the release
 together with the tag.
