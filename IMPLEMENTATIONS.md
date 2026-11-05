@@ -27,10 +27,11 @@ The name of a published package (npm, PyPI, …) is agreed when the repository i
 
 ## Rights of a maintainer
 
-- The **Maintain** role on their repository: merge, release, manage issues, discussions
-  and settings that do not touch security.
+- The **Maintain** role on their repository: merge, release under the rules of
+  [RELEASING.md](https://github.com/home-mandate/.github/blob/main/RELEASING.md), manage
+  issues, discussions and settings that do not touch security.
 - No rights on other repositories through this role.
-- The CI workflows and the branch protection of `main` are reviewed by me
+- The CI workflows and the branch protection of `main` and `release/*` are reviewed by me
   (`CODEOWNERS`), so that the checks that make the conformance claim stay in place.
 
 ## What every implementation keeps

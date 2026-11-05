@@ -13,13 +13,17 @@ edit the specification until v1.0. I decide:
 - what goes into the specification, the schemas and the conformance cases;
 - which repositories exist in the organization, what they are called and who maintains
   them;
+- how versions are released
+  ([RELEASING.md](https://github.com/home-mandate/.github/blob/main/RELEASING.md));
 - what is listed on [home-mandate.org](https://home-mandate.org).
 
 **Maintainer of a repository.** Every repository has a named maintainer; for the
 repositories I started, that is me. A maintainer decides everything inside their
-repository: code, architecture, dependencies, style, releases and which contributions are
-merged. I do not overrule a maintainer there. What a maintainer must keep is in
-[IMPLEMENTATIONS.md](https://github.com/home-mandate/.github/blob/main/IMPLEMENTATIONS.md).
+repository: code, architecture, dependencies, style, what goes into a release and when, and
+which contributions are merged. I do not overrule a maintainer there. What a maintainer must
+keep is in
+[IMPLEMENTATIONS.md](https://github.com/home-mandate/.github/blob/main/IMPLEMENTATIONS.md) and
+[RELEASING.md](https://github.com/home-mandate/.github/blob/main/RELEASING.md).
 
 **Contributors.** Anyone may open issues, discussions and pull requests in any repository
 ([CONTRIBUTING.md](https://github.com/home-mandate/.github/blob/main/CONTRIBUTING.md)).
