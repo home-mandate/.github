@@ -49,6 +49,9 @@ tag can't be used twice.
   request says why.
 - `release/X.Y` takes fixes only, plus the version and changelog of the patch. Functions never
   go there.
+- A change to the release workflow, or to the checks it relies on, goes to the newest
+  `release/X.Y` too, through a pull request titled `ci(X.Y): …`. The workflow runs in the
+  version of the tagged commit, so a patch would otherwise be published the old way.
 - `release/X.Y` is never merged back. After a patch, a pull request adds its changelog entry
   to `main`, so that the changelog there stays complete.
 - A security fix is prepared in a private
@@ -68,7 +71,12 @@ A published version can't be taken back. So every repository has these guards:
 - **Tags** are immutable. Only administrators and the repository's maintainer may create them.
 - **`main` and `release/*`** have the same ruleset: pull request required, checks required, no
   force-push, no deletion. Only administrators may create a `release/*` branch.
-- **Implementations** attach a conformance report with build provenance to every release.
+- **Implementations** attach a conformance report with build provenance to every release. A
+  release is created as a draft and published only when its report is attached, or it is
+  created in one step that attaches the report before the release is visible.
+- **Published releases** are immutable (repository setting): no file can be added, replaced
+  or removed afterwards, and the tag stays where it is. A run that fails before publishing
+  needs a new version.
 - **The nightly vulnerability check** also covers the newest `release/X.Y`. A release branch
   gets no dependency updates of its own, so a finding there is fixed like any other bug.
 
