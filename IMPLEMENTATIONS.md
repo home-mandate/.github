@@ -44,7 +44,10 @@ The name of a published package (npm, PyPI, …) is agreed when the repository i
 2. **Conformance is measured, not claimed.** The README names the version of the
    specification and the conformance classes the implementation passes (SPEC-v0 Section
    8.1). "Passes" means: `mandate-conformance` from the matching tag of the specification,
-   run in CI on every change. I run it myself before an implementation is listed.
+   run in CI on every change. I run it myself before an implementation is listed. A relay
+   operator states the version of the
+   [Relay Specification](https://github.com/home-mandate/relay-spec) instead, and passes
+   `relay-conformance` from its matching tag against its live service.
 3. **Tests come from the specification.** Where a test checks behaviour the
    specification defines, it is derived from the text or the conformance cases, not from
    what the code happens to do. Signature verification, digests, canonicalization and the
