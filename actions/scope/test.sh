@@ -26,6 +26,8 @@ web/*                     web
 go.mod                    go
 ci/*                      all
 docs/*                    -  only ^(#|$)
+notes/*                   go only ^#
+broken/*                  -  only [
 EOF
 }
 
@@ -35,7 +37,9 @@ repo() {
   mkdir -p "$dir"
   cd "$dir"
   git init -q -b main
-  mkdir -p app web/shared docs ci
+  mkdir -p app web/shared docs ci notes broken
+  printf '# title\n' > notes/list
+  echo 'x' > broken/file
   rules > scope.rules
   printf 'version: "0.1.0"\nports:\n  - 8765\n' > app/config.yaml
   echo 'package main' > main.go
@@ -162,6 +166,49 @@ commit docs
 as_pull_request
 expect "pull request: only with an expression that matches the empty line" '[]' GITHUB_EVENT_NAME=pull_request
 
+repo only-with-blank-line-at-the-end
+change work
+printf '# title\n# more\n\n' > notes/list
+commit notes
+as_pull_request
+expect "pull request: an empty line at the end is a changed line too" '["go","web"]' GITHUB_EVENT_NAME=pull_request
+
+repo only-with-invalid-expression
+change work
+echo 'y' > broken/file
+commit broken
+as_pull_request
+expect "pull request: an invalid expression after only is refused" 'exit 1' GITHUB_EVENT_NAME=pull_request
+
+repo name-with-space
+change work
+echo 'y' > 'web/my file.ts'
+printf 'package main // x\n' > 'cmd main.go'
+commit names
+as_pull_request
+expect "pull request: file names with spaces" '["go","web"]' GITHUB_EVENT_NAME=pull_request
+
+repo three-parents
+change one
+echo 'y' > web/app.ts
+commit web
+git checkout -q main
+change two
+echo 'package main // two' > main.go
+commit go
+git checkout -q --detach refs/remotes/origin/main
+git merge -q --no-ff -m merge one two > /dev/null
+expect "pull request: a merge of more than two commits" '["go","web"]' GITHUB_EVENT_NAME=pull_request
+
+repo unreadable-base
+change work
+echo 'y' > web/app.ts
+commit web
+as_pull_request
+tree=$(git rev-parse 'HEAD^1^{tree}')
+rm -f ".git/objects/${tree:0:2}/${tree:2}"
+expect "pull request: a base that cannot be read is refused" 'exit 1' GITHUB_EVENT_NAME=pull_request
+
 repo not-a-merge
 change work
 echo 'y' > web/app.ts
@@ -209,6 +256,19 @@ commit web
 git update-ref -d refs/remotes/origin/main
 expect "push: without origin/main and release/X.Y there is nothing to compare with" 'exit 1' GITHUB_EVENT_NAME=push
 
+repo push-to-main
+echo 'more' >> README.md
+commit text
+git update-ref refs/remotes/origin/main HEAD
+expect "push: to main itself is checked in full" '["go","web"]' GITHUB_EVENT_NAME=push GITHUB_REF=refs/heads/main
+
+repo push-to-release
+git checkout -q -b release/0.1
+echo 'more' >> README.md
+commit text
+git update-ref refs/remotes/origin/release/0.1 HEAD
+expect "push: to a release branch itself is checked in full" '["go","web"]' GITHUB_EVENT_NAME=push GITHUB_REF=refs/heads/release/0.1
+
 repo push-no-change
 change work
 expect "push: a branch without a change touches nothing" '[]' GITHUB_EVENT_NAME=push
@@ -229,6 +289,22 @@ echo 'y' > web/app.ts
 commit undeclared
 as_pull_request
 expect "a rule with an undeclared scope is refused" 'exit 1' GITHUB_EVENT_NAME=pull_request
+
+repo rule-without-scope
+change work
+{ echo 'scopes: go web'; echo 'web/*'; } > scope.rules
+echo 'y' > web/app.ts
+commit no-scope
+as_pull_request
+expect "a rule that names no scope is refused" 'exit 1' GITHUB_EVENT_NAME=pull_request
+
+repo crlf
+change work
+printf 'scopes: go web\r\nweb/*  web\r\n' > scope.rules
+echo 'y' > web/app.ts
+commit crlf
+as_pull_request
+expect "rules with Windows line endings are refused" 'exit 1' GITHUB_EVENT_NAME=pull_request
 
 repo no-scopes-line
 echo 'web/*  web' > scope.rules
