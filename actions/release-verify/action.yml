@@ -1,0 +1,62 @@
+# SPDX-License-Identifier: Apache-2.0
+name: Release verify
+description: >
+  Checks, before anything is published, that a tag on a commit may become a release: where the
+  tag stands, that the commit came from a merged pull request whose checks passed, and that a
+  version is a release candidate that passed (RELEASING.md, "Publishing"). The repository must
+  be checked out with its full history (fetch-depth: 0). The job needs read access to
+  contents, pull requests, checks and actions.
+
+inputs:
+  tag:
+    description: The tag, vX.Y.Z, vX.Y.0-alpha.N or vX.Y.Z-rc.N.
+    required: true
+  commit:
+    description: The commit the tag points to, or will point to.
+    default: ${{ github.sha }}
+  required-checks:
+    description: >
+      The checks that must have run on the pull request, by the beginning of their names, one
+      per line. At least one.
+    required: true
+  workflow:
+    description: The file name of the release workflow, whose run for a release candidate must have succeeded.
+    default: release.yml
+  gate-job:
+    description: The name of the job that must have succeeded in the run of a release candidate before its commit may become the version.
+    default: Release gate
+  token:
+    description: A token that reads pull requests, checks, releases and workflow runs.
+    default: ${{ github.token }}
+
+outputs:
+  version:
+    description: The tag without "v".
+    value: ${{ steps.verify.outputs.version }}
+  base:
+    description: The version without a suffix, X.Y.Z. The repository carries this version.
+    value: ${{ steps.verify.outputs.base }}
+  kind:
+    description: alpha, rc or version.
+    value: ${{ steps.verify.outputs.kind }}
+  prerelease:
+    description: '"true" for an alpha and a release candidate.'
+    value: ${{ steps.verify.outputs.prerelease }}
+  branch:
+    description: The branch the tag stands on, main or release/X.Y.
+    value: ${{ steps.verify.outputs.branch }}
+
+runs:
+  using: composite
+  steps:
+    - id: verify
+      shell: bash
+      env:
+        TAG: ${{ inputs.tag }}
+        COMMIT: ${{ inputs.commit }}
+        REQUIRED_CHECKS: ${{ inputs.required-checks }}
+        RELEASE_WORKFLOW: ${{ inputs.workflow }}
+        GATE_JOB: ${{ inputs.gate-job }}
+        GH_TOKEN: ${{ inputs.token }}
+      run: |
+        "$GITHUB_ACTION_PATH/verify.sh" "$TAG" "$COMMIT" >> "$GITHUB_OUTPUT"
