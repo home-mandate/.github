@@ -17,11 +17,14 @@ inputs:
   required-checks:
     description: >
       The checks that must have run on the pull request, by the beginning of their names, one
-      per line.
-    default: ""
+      per line. At least one.
+    required: true
   workflow:
     description: The file name of the release workflow, whose run for a release candidate must have succeeded.
     default: release.yml
+  gate-job:
+    description: The name of the job that must have succeeded in the run of a release candidate before its commit may become the version.
+    default: Release gate
   token:
     description: A token that reads pull requests, checks, releases and workflow runs.
     default: ${{ github.token }}
@@ -53,6 +56,7 @@ runs:
         COMMIT: ${{ inputs.commit }}
         REQUIRED_CHECKS: ${{ inputs.required-checks }}
         RELEASE_WORKFLOW: ${{ inputs.workflow }}
+        GATE_JOB: ${{ inputs.gate-job }}
         GH_TOKEN: ${{ inputs.token }}
       run: |
         "$GITHUB_ACTION_PATH/verify.sh" "$TAG" "$COMMIT" >> "$GITHUB_OUTPUT"

@@ -116,13 +116,23 @@ release() {
     > "$(fixture "repos/$GITHUB_REPOSITORY/releases/tags/$1")"
 }
 
-# runs COMMIT 'tag status conclusion'...
+# runs COMMIT 'tag status conclusion [id]'...: without an id the run is 100, and its jobs
+# are those of a release candidate that passed.
 runs() {
   local commit=$1
   shift
-  printf '%s\n' "$@" | jq -R 'split(" ") | {head_branch: .[0], status: .[1], conclusion: (.[2] // null)}' |
+  printf '%s\n' "$@" | jq -R 'split(" ") | {id: ((.[3] // "100") | tonumber), head_branch: .[0], status: .[1], conclusion: (.[2] // null)}' |
     jq -s '{workflow_runs: .}' \
       > "$(fixture "repos/$GITHUB_REPOSITORY/actions/workflows/release.yml/runs?event=push&head_sha=$commit&per_page=100")"
+  jobs 100 'success|Check the tag' 'success|Publish the release' 'success|Release gate'
+}
+
+# jobs RUN 'conclusion|name'...
+jobs() {
+  local run=$1
+  shift
+  printf '%s\n' "$@" | jq -R 'split("|") | {conclusion: .[0], name: .[1]}' | jq -s '{jobs: .}' \
+    > "$(fixture "repos/$GITHUB_REPOSITORY/actions/runs/$run/jobs?per_page=100")"
 }
 
 # candidate TAG COMMIT: a release candidate that passed.
@@ -227,8 +237,46 @@ world
 checks "$fix" 'completed|success|Go (vet, tests)' 'completed|neutral|Fuzz (short)' 'completed|skipped|Web E2E'
 expect "checks: skipped and neutral count as passed" "$rc" v0.2.0-rc.1 "$fix"
 world
-checks "$fix" 'completed|success|Other'
-REQUIRED="" expect "checks: no required names" "$rc" v0.2.0-rc.1 "$fix"
+REQUIRED="" expect "checks: no required names is a mistake of the caller" refused v0.2.0-rc.1 "$fix"
+world
+checks "$fix" 'completed|skipped|Go (vet, tests)' 'completed|skipped|Fuzz (short)' 'completed|success|Scope (push)'
+expect "checks: a pull request of text alone skipped the required ones" "$rc" v0.2.0-rc.1 "$fix"
+world
+checks "$fix" 'completed|success|Lint, then Go (vet)' 'completed|success|Fuzz (short)'
+expect "checks: the required text must begin the name" refused v0.2.0-rc.1 "$fix"
+world
+REQUIRED=success expect "checks: the required text is not looked for in the result" refused v0.2.0-rc.1 "$fix"
+for conclusion in timed_out action_required stale; do
+  world
+  checks "$fix" 'completed|success|Go (vet, tests)' "completed|$conclusion|Fuzz (short)"
+  expect "checks: $conclusion is not passed" refused v0.2.0-rc.1 "$fix"
+done
+
+# The tag and the versions that are out.
+world
+git tag v0.2.0-rc.1 "$cut"
+expect "tag: exists on another commit" refused v0.2.0-rc.1 "$fix"
+world
+git tag v0.2.0-rc.1 "$fix"
+expect "tag: exists on this commit" "$rc" v0.2.0-rc.1 "$fix"
+world
+git tag v0.2.1 "$fix"
+expect "order: not behind a newer version" refused v0.2.0-rc.1 "$cut"
+world
+git tag v0.2.0 "$fix"
+expect "order: no release candidate of a version that is out" refused v0.2.0-rc.2 "$fix"
+world
+git tag v0.2.0 "$fix"
+expect "order: the next patch not on the commit of the last version" refused v0.2.1-rc.1 "$fix"
+world
+git tag v0.2.0 "$fix"
+expect "order: the next patch not before the last version" refused v0.2.1-rc.1 "$cut"
+world
+git tag v0.2.0 "$cut"
+expect "order: the next patch after the last version" 'version=0.2.1-rc.1 base=0.2.1 kind=rc prerelease=true branch=release/0.2' v0.2.1-rc.1 "$fix"
+world
+git tag v0.3.0 "$cut"
+expect "order: no alpha of a version that is out" refused v0.3.0-alpha.1 "$later"
 
 # A version is a release candidate that passed.
 final='version=0.2.0 base=0.2.0 kind=version prerelease=false branch=release/0.2'
@@ -269,9 +317,25 @@ rm "$(fixture "repos/$GITHUB_REPOSITORY/actions/workflows/release.yml/runs?event
 expect "version: no run known" refused v0.2.0 "$fix"
 world
 candidate v0.2.0-rc.1 "$fix"
+jobs 100 'success|Check the tag' 'success|Publish the release' 'skipped|Release gate'
+expect "version: the gate of the release candidate was skipped" refused v0.2.0 "$fix"
+world
+candidate v0.2.0-rc.1 "$fix"
+jobs 100 'success|Check the tag' 'success|Publish the release' 'success|Release gate (part)'
+expect "version: the run has no job with the gate's name" refused v0.2.0 "$fix"
+world
+candidate v0.2.0-rc.1 "$fix"
+rm "$(fixture "repos/$GITHUB_REPOSITORY/actions/runs/100/jobs?per_page=100")"
+expect "version: the jobs of the run cannot be read" refused v0.2.0 "$fix"
+world
+candidate v0.2.0-rc.1 "$fix"
+runs "$fix" 'v0.2.0-rc.1 completed failure 99' 'v0.2.0-rc.1 completed success 100'
+expect "version: a second run of the release candidate passed" "$final" v0.2.0 "$fix"
+world
+candidate v0.2.0-rc.1 "$fix"
 git tag v0.2.0-rc.2 "$fix"
 release v0.2.0-rc.2 false true
-runs "$fix" 'v0.2.0-rc.1 completed failure' 'v0.2.0-rc.2 completed success'
+runs "$fix" 'v0.2.0-rc.1 completed failure 99' 'v0.2.0-rc.2 completed success'
 expect "version: the second release candidate on the commit passed" "$final" v0.2.0 "$fix"
 world
 candidate v0.2.0-rc.1 "$fix"
@@ -289,5 +353,8 @@ expect "release: exists already" refused v0.2.0-rc.1 "$fix"
 world
 echo 'gh: Server Error (HTTP 502)' > "$(fixture "repos/$GITHUB_REPOSITORY/releases/tags/v0.2.0-rc.1").error"
 expect "release: GitHub does not answer" refused v0.2.0-rc.1 "$fix"
+world
+echo 'gh: upstream said (HTTP 404) while proxying (HTTP 502)' > "$(fixture "repos/$GITHUB_REPOSITORY/releases/tags/v0.2.0-rc.1").error"
+expect "release: an error that mentions 404 is not \"not found\"" refused v0.2.0-rc.1 "$fix"
 
 exit "$failed"
