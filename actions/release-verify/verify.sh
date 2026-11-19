@@ -25,11 +25,13 @@
 #    and with a run of the release workflow that succeeded and in which the job GATE_JOB
 #    succeeded. The version is what was tested.
 # 5. The release doesn't exist yet. (A draft is not visible here; the job that creates the
-#    release deals with the draft of an earlier attempt.)
+#    release deals with the draft of an earlier attempt.) With RELEASE_STATE=published it is
+#    the other way round, for what follows a release, such as publishing a package: the
+#    release exists and is published.
 #
 # Environment: GITHUB_REPOSITORY; GH_TOKEN with read access to contents, pull requests, checks
 # and actions; REQUIRED_CHECKS; RELEASE_WORKFLOW (default: release.yml); GATE_JOB (default:
-# "Release gate").
+# "Release gate"); RELEASE_STATE (absent, the default, or published).
 # Reads the remote-tracking branches and the tags of the current repository, so it needs the
 # full history (fetch-depth: 0). Whatever cannot be read is a refusal.
 set -euo pipefail
@@ -164,10 +166,21 @@ if [ "$kind" = version ]; then
   echo "$tag is the release candidate $passed" >&2
 fi
 
-# 5. Not released yet.
+# 5. Not released yet, or, for what follows a release, released.
 status=0
-NOT_FOUND=ok api "repos/$repo/releases/tags/$tag" .tag_name > /dev/null || status=$?
-[ "$status" -eq 4 ] || refuse "release $tag exists already"
+case "${RELEASE_STATE:-absent}" in
+  absent)
+    NOT_FOUND=ok api "repos/$repo/releases/tags/$tag" .tag_name > /dev/null || status=$?
+    [ "$status" -eq 4 ] || refuse "release $tag exists already"
+    ;;
+  published)
+    draft=$(NOT_FOUND=ok api "repos/$repo/releases/tags/$tag" .draft) || status=$?
+    if [ "$status" -ne 0 ] || [ "$draft" != false ]; then refuse "release $tag is not published"; fi
+    ;;
+  *)
+    refuse "RELEASE_STATE is \"$RELEASE_STATE\", neither absent nor published"
+    ;;
+esac
 
 prerelease=true
 [ "$kind" != version ] || prerelease=false

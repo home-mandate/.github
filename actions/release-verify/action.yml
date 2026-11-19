@@ -25,6 +25,11 @@ inputs:
   gate-job:
     description: The name of the job that must have succeeded in the run of a release candidate before its commit may become the version.
     default: Release gate
+  release:
+    description: >
+      "absent": the release must not exist yet, for the workflow that creates it. "published":
+      it must exist and be published, for what follows a release, such as publishing a package.
+    default: absent
   token:
     description: A token that reads pull requests, checks, releases and workflow runs.
     default: ${{ github.token }}
@@ -57,6 +62,7 @@ runs:
         REQUIRED_CHECKS: ${{ inputs.required-checks }}
         RELEASE_WORKFLOW: ${{ inputs.workflow }}
         GATE_JOB: ${{ inputs.gate-job }}
+        RELEASE_STATE: ${{ inputs.release }}
         GH_TOKEN: ${{ inputs.token }}
       run: |
         "$GITHUB_ACTION_PATH/verify.sh" "$TAG" "$COMMIT" >> "$GITHUB_OUTPUT"
