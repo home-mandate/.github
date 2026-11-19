@@ -357,4 +357,27 @@ world
 echo 'gh: upstream said (HTTP 404) while proxying (HTTP 502)' > "$(fixture "repos/$GITHUB_REPOSITORY/releases/tags/v0.2.0-rc.1").error"
 expect "release: an error that mentions 404 is not \"not found\"" refused v0.2.0-rc.1 "$fix"
 
+
+# What follows a release needs the release.
+world
+release v0.2.0-rc.1 false true
+RELEASE_STATE=published expect "published: the release is out" "$rc" v0.2.0-rc.1 "$fix"
+world
+RELEASE_STATE=published expect "published: no release" refused v0.2.0-rc.1 "$fix"
+world
+release v0.2.0-rc.1 true true
+RELEASE_STATE=published expect "published: the release is a draft" refused v0.2.0-rc.1 "$fix"
+world
+echo 'gh: Server Error (HTTP 502)' > "$(fixture "repos/$GITHUB_REPOSITORY/releases/tags/v0.2.0-rc.1").error"
+RELEASE_STATE=published expect "published: GitHub does not answer" refused v0.2.0-rc.1 "$fix"
+world
+candidate v0.2.0-rc.1 "$fix"
+release v0.2.0 false false
+RELEASE_STATE=published expect "published: a version still needs its release candidate" "$final" v0.2.0 "$fix"
+world
+release v0.2.0 false false
+RELEASE_STATE=published expect "published: a version without a release candidate" refused v0.2.0 "$fix"
+world
+RELEASE_STATE=draft expect "published: an unknown state is a mistake of the caller" refused v0.2.0-rc.1 "$fix"
+
 exit "$failed"
