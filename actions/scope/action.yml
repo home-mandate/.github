@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: Apache-2.0
+name: Scope
+description: >
+  Tells which scopes of a repository a change touches, from the rules in .github/scope.rules,
+  so that the jobs of a workflow run only for what changed. The repository must be checked out
+  with its full history (fetch-depth: 0), for a pull request at the default ref of the event.
+
+inputs:
+  rules:
+    description: The rules file (see scope.sh for the format).
+    default: .github/scope.rules
+  full:
+    description: '"true" runs everything, whatever changed.'
+    default: "false"
+
+outputs:
+  scopes:
+    description: The touched scopes as a JSON array, for contains(fromJSON(…), 'scope').
+    value: ${{ steps.scope.outputs.scopes }}
+
+runs:
+  using: composite
+  steps:
+    - id: scope
+      shell: bash
+      env:
+        RULES: ${{ inputs.rules }}
+        FULL: ${{ inputs.full }}
+      run: |
+        scopes=$("$GITHUB_ACTION_PATH/scope.sh" "$RULES")
+        echo "scopes=$scopes" >> "$GITHUB_OUTPUT"
+        echo "Scopes of this change: \`$scopes\`" >> "$GITHUB_STEP_SUMMARY"

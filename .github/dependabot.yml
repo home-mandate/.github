@@ -1,0 +1,15 @@
+# Dependabot: the pinned GitHub Actions of this repository's own workflow. All updates of a
+# week in one pull request, and only releases that are at least 7 days old.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: ci
